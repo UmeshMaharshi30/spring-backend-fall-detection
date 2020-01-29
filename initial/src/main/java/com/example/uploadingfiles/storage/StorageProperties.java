@@ -8,7 +8,7 @@ public class StorageProperties {
 	/**
 	 * Folder location for storing files
 	 */
-	private String location = "upload-dir";
+	private String location = "A:\\CC\\Server application\\android data";
 
 	public String getLocation() {
 		return location;

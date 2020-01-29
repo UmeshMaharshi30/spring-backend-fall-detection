@@ -34,8 +34,8 @@ public class FileUploadController {
 	
 	
 	@PostMapping("/upload/sensordata")
-	public String uploadText(@RequestParam(name = "sensorData") String mess, @RequestParam(name = "count") String count) {
-		storageService.storeStringAsFile(mess, Integer.parseInt(count));
+	public String uploadText(@RequestParam(name = "sensorData") String mess, @RequestParam(name = "count") String count, @RequestParam(name = "activity") String activity) {
+		storageService.storeStringAsFile(mess, Integer.parseInt(count), activity);
 		return "uploadForm";
 	}
 	

@@ -21,10 +21,12 @@ import java.util.stream.Stream;
 public class FileSystemStorageService implements StorageService {
 
 	private final Path rootLocation;
+	private String UPLOAD_DIR;
 
 	@Autowired
 	public FileSystemStorageService(StorageProperties properties) {
 		this.rootLocation = Paths.get(properties.getLocation());
+		UPLOAD_DIR = properties.getLocation();
 	}
 
 	@Override
@@ -40,9 +42,9 @@ public class FileSystemStorageService implements StorageService {
 	}
 	
 
-	public void storeStringAsFile(String fileData, int readingCount) {
-		String filename = "sensordata_" + System.currentTimeMillis() + "_" + readingCount + ".csv";
-		String directoryName = this.rootLocation.getFileName() + (File.separatorChar + "") + readingCount; 
+	public void storeStringAsFile(String fileData, int readingCount, String activityName) {
+		String filename = activityName + "_" + System.currentTimeMillis() + "_" + readingCount + ".csv";
+		String directoryName = UPLOAD_DIR + (File.separatorChar + "") + readingCount; 
 		File directory = new File(directoryName);
 		if (!directory.exists()){ 
 			directory.mkdir();
