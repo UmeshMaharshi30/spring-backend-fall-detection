@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +36,23 @@ public class FileSystemStorageService implements StorageService {
 			Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
 		} catch (IOException e) {
 			throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+		}
+	}
+	
+
+	public void storeStringAsFile(String fileData, int readingCount) {
+		String filename = "sensordata_" + System.currentTimeMillis() + "_" + readingCount + ".csv";
+		String directoryName = this.rootLocation.getFileName() + (File.separatorChar + "") + readingCount; 
+		File directory = new File(directoryName);
+		if (!directory.exists()){ 
+			directory.mkdir();
+		}
+		InputStream targetStream = new ByteArrayInputStream(fileData.getBytes());
+		try {
+			Files.copy(targetStream, Paths.get(directoryName).resolve(filename));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
