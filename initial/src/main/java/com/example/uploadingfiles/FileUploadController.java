@@ -1,7 +1,18 @@
 package com.example.uploadingfiles;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -58,7 +69,30 @@ public class FileUploadController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
 				"attachment; filename=\"" + file.getFilename() + "\"").body(file);
 	}
-
+	
+	@GetMapping("/fall")
+	@ResponseBody
+	public void serveFile() {
+		AudioInputStream audioInputStream;
+		try {
+			audioInputStream = audioInputStream =  
+			        AudioSystem.getAudioInputStream(new File("C:\\Windows\\Media\\Alarm05.wav").getAbsoluteFile());
+			Clip  clip = AudioSystem.getClip(); 
+			clip.open(audioInputStream); 
+	        clip.loop(1); 
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	@PostMapping("/")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 			RedirectAttributes redirectAttributes) {

@@ -1,5 +1,6 @@
 package com.example.uploadingfiles.storage;
 
+import  sun.audio.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -9,13 +10,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import java.applet.*;
 
 @Service
 public class FileSystemStorageService implements StorageService {
@@ -44,15 +56,34 @@ public class FileSystemStorageService implements StorageService {
 
 	public void storeStringAsFile(String fileData, int readingCount, String activityName) {
 		String filename = activityName + "_" + System.currentTimeMillis() + "_" + readingCount + ".csv";
-		String directoryName = UPLOAD_DIR + (File.separatorChar + "") + readingCount; 
+		String directoryName = UPLOAD_DIR + (File.separatorChar + "") + activityName;
 		File directory = new File(directoryName);
 		if (!directory.exists()){ 
 			directory.mkdir();
 		}
-		InputStream targetStream = new ByteArrayInputStream(fileData.getBytes());
+		directoryName += (File.separatorChar + "") + readingCount; 
+		directory = new File(directoryName);
+		if (!directory.exists()){ 
+			directory.mkdir();
+		}
 		try {
+			AudioInputStream audioInputStream = audioInputStream =  
+	                AudioSystem.getAudioInputStream(new File("C:\\Windows\\Media\\Alarm03.wav").getAbsoluteFile());
+			Clip  clip = AudioSystem.getClip(); 
+			InputStream targetStream = new ByteArrayInputStream(fileData.getBytes());
 			Files.copy(targetStream, Paths.get(directoryName).resolve(filename));
+			clip.open(audioInputStream); 
+	        clip.loop(0); 
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
